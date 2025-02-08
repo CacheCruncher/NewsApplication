@@ -3,6 +3,8 @@ plugins {
     alias(libs.plugins.kotlin.android)
     // Kotlin serialization plugin for type safe routes and navigation arguments
     kotlin("plugin.serialization") version "2.0.21"
+    id("kotlin-kapt")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -17,7 +19,7 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        //buildConfigField("String", "NEWS_API_ACCESS_KEY", news_api_access_key)
+
     }
 
     buildTypes {
@@ -27,6 +29,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            //buildConfigField("String", "NEWS_API_ACCESS_KEY", news_api_access_key)
         }
     }
     compileOptions {
@@ -71,4 +74,20 @@ dependencies {
 
     // retrofit
     implementation(libs.retrofit)
+    // gson converter
+    implementation (libs.converter.gson)
+    //logging interceptor
+    implementation (libs.logging.interceptor)
+
+    // hilt
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.android.compiler)
+
+    // glide
+    implementation(libs.glide)
+}
+
+// Allow references to generated code
+kapt {
+    correctErrorTypes = true
 }

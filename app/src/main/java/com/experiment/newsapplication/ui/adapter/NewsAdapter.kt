@@ -1,11 +1,11 @@
 package com.experiment.newsapplication.ui.adapter
 
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.experiment.newsapplication.R
 import com.experiment.newsapplication.data.NewsHighlight
 import com.experiment.newsapplication.databinding.ItemNewsArticleBinding
@@ -25,8 +25,9 @@ class NewsAdapter : ListAdapter<NewsHighlight, NewsViewHolder>(NewsComparator())
 }
 
 
-class NewsViewHolder(private val itemViewBinding: ItemNewsArticleBinding) :
-    RecyclerView.ViewHolder(itemViewBinding.root) {
+class NewsViewHolder(
+    private val itemViewBinding: ItemNewsArticleBinding
+) : RecyclerView.ViewHolder(itemViewBinding.root) {
 
     fun bind(newsHighlight: NewsHighlight) {
         itemViewBinding.apply {
@@ -34,7 +35,11 @@ class NewsViewHolder(private val itemViewBinding: ItemNewsArticleBinding) :
             val icon =
                 if (newsHighlight.isBookMark) R.drawable.bookmark_icon else R.drawable.unbookmarked_icon
             newsBookmarkButton.setImageResource(icon)
-            newsHighlightImage.setImageURI(Uri.parse(newsHighlight.newsUrl))
+            Glide.with(itemView)
+                .load(newsHighlight.imageUrl)
+                .error(R.drawable.image_placeholder)
+                .into(newsHighlightImage)
+
         }
     }
 }
