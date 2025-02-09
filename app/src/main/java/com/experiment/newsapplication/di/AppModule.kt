@@ -1,7 +1,7 @@
 package com.experiment.newsapplication.di
 
 import com.experiment.newsapplication.api.NewsAPI
-import com.experiment.newsapplication.api.NewsAPIInterceptor
+import com.experiment.newsapplication.network.NewsAPIInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

@@ -5,6 +5,10 @@
     app:startDestination="@id/newsHighlightFragment">
     <fragment
         android:id="@+id/newsHighlightFragment"
-        android:name="com.experiment.newsapplication.ui.NewsHighlightFragment"
+        android:name="com.experiment.newsapplication.ui.feature.newshighlight.NewsHighlightFragment"
         android:label="NewsHighlightFragment" />
+    <fragment
+        android:id="@+id/bookmarkedNewsFragment"
+        android:name="com.experiment.newsapplication.ui.feature.bookmarkednews.BookmarkedNewsFragment"
+        android:label="BookmarkedNewsFragment" />
 </navigation>

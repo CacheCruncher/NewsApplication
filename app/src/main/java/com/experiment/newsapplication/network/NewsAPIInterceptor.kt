@@ -1,4 +1,4 @@
-package com.experiment.newsapplication.api
+package com.experiment.newsapplication.network
 
 import android.util.Log
 import okhttp3.Interceptor

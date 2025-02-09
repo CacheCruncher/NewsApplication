@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">NewsApplication</string>
+    <string name="news_highlight">News Highlight</string>
+    <string name="bookmarked_news">Bookmarked News</string>
 </resources>
