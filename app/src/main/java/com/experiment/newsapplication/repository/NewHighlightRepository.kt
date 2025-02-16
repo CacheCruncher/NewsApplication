@@ -4,6 +4,7 @@ import android.util.Log
 import com.experiment.newsapplication.api.NewsAPI
 import com.experiment.newsapplication.data.APIResult
 import com.experiment.newsapplication.data.NewsHighlight
+import com.experiment.newsapplication.ui.feature.newshighlight.Refresh
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
@@ -26,7 +27,7 @@ class NewHighlightRepository @Inject constructor(private val newsAPI: NewsAPI) {
         }
     }
 
-    fun getNewsResult(): Flow<APIResult<List<NewsHighlight>>> {
+    fun getNewsResult(refresh: Refresh): Flow<APIResult<List<NewsHighlight>>> {
         return channelFlow {
             val response = newsAPI.getNewsResponse()
 

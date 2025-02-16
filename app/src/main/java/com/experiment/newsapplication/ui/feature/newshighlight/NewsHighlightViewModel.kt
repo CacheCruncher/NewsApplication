@@ -18,18 +18,23 @@ class NewsHighlightViewModel @Inject constructor(
     private val repository: NewHighlightRepository
 ) : ViewModel() {
 
-    private val refreshChannel = Channel<Unit>()
+    private val refreshChannel = Channel<Refresh>()
 
-    val newsHighlight = refreshChannel.receiveAsFlow().flatMapLatest {
-        repository.getNewsResult()
+    val newsHighlight = refreshChannel.receiveAsFlow().flatMapLatest { refresh ->
+        repository.getNewsResult(refresh)
     }.stateIn(
         viewModelScope, SharingStarted.Lazily, APIResult.Loading()
     )
 
 
-    fun onRefresh() {
+    fun onRefresh(refresh: Refresh) {
         viewModelScope.launch {
-            refreshChannel.send(Unit)
+            refreshChannel.send(refresh)
         }
     }
+}
+
+enum class Refresh {
+    MANUAL,
+    AUTOMATIC
 }
