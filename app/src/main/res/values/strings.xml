@@ -3,5 +3,7 @@
     <string name="news_highlight">News Highlight</string>
     <string name="bookmarked_news">Bookmarked News</string>
     <string name="error_message">Error message</string>
-    <string name="retry">retry</string>
+    <string name="retryButton">retry</string>
+    <string name="content_image">content image</string>
+    <string name="bookmark_button">bookmark button</string>
 </resources>
