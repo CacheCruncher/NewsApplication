@@ -4,6 +4,7 @@ import android.util.Log
 import com.experiment.newsapplication.api.NewsAPI
 import com.experiment.newsapplication.data.APIResult
 import com.experiment.newsapplication.data.NewsHighlight
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import javax.inject.Inject
@@ -31,6 +32,9 @@ class NewHighlightRepository @Inject constructor(private val newsAPI: NewsAPI) {
 
             Log.d("repository", "getNewsResult: code: ${response.code()} ")
             send(APIResult.Loading())
+
+            // added 2s delay to show progress icon
+            delay(2000)
 
             if (response.isSuccessful) {
                 response.body()?.articles?.map {

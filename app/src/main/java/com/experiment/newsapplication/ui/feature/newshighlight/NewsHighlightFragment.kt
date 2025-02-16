@@ -3,6 +3,7 @@ package com.experiment.newsapplication.ui.feature.newshighlight
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -32,35 +33,29 @@ class NewsHighlightFragment : Fragment(R.layout.fragment_news_highlight) {
             //animation.duration = 0
 
             viewLifecycleOwner.lifecycleScope.launch {
-                repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    viewModel.newsHighlightFlow.collect{
-                        if(it.isNotEmpty()) {
-                            for (news in it.listIterator()){
-                                Log.d("NewsAPI", "ui: ${news.title}")
-                            }
-                            newsAdapter.submitList(it)
-                            newsAdapter.notifyDataSetChanged()
-                        }
-
-                    }
-                }
-            }
-
-            viewLifecycleOwner.lifecycleScope.launch {
                 repeatOnLifecycle(Lifecycle.State.STARTED){
-                    viewModel.newsResultFlow.collectIndexed { index, value ->
-                        Log.d("newsfragment ", "onViewCreated:  index : $index, data : ${value.data?.size}")
+                    viewModel.newsHighlight.collectIndexed { index, newsResult ->
+                        Log.d("newsfragment ", "onViewCreated:  index : $index, data : ${newsResult.data?.size}, state : is_loading : ${newsResult is APIResult.Loading}, is_error:${newsResult is APIResult.Error}, is_success: ${newsResult is APIResult.Success}")
 
-                        when(value){
+                        when(newsResult){
                             is APIResult.Loading -> {
-
+                                binding.swipeRefreshLayout.isRefreshing = true
+                                binding.retryButton.isVisible = false
+                                binding.errorTv.isVisible = false
+                                newsResult.data?.let {
+                                    newsAdapter.submitList(newsResult.data)
+                                }
                             }
                             is APIResult.Success -> {
-
+                                binding.swipeRefreshLayout.isRefreshing = false
+                                binding.retryButton.isVisible = false
+                                binding.errorTv.isVisible = false
+                                newsAdapter.submitList(newsResult.data)
                             }
                             is APIResult.Error -> {
-
-
+                                binding.swipeRefreshLayout.isRefreshing = false
+                                binding.retryButton.isVisible = true
+                                binding.errorTv.isVisible = true
                             }
                         }
 
@@ -68,11 +63,15 @@ class NewsHighlightFragment : Fragment(R.layout.fragment_news_highlight) {
                 }
             }
         }
+
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            viewModel.onRefresh()
+        }
     }
 
     override fun onStart() {
         super.onStart()
-        viewModel.getNewsHighlight()
+        viewModel.onRefresh()
     }
 
 }
