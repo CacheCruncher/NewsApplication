@@ -13,6 +13,7 @@ import com.experiment.newsapplication.R
 import com.experiment.newsapplication.data.APIResult
 import com.experiment.newsapplication.databinding.FragmentBookmarkedNewsBinding
 import com.experiment.newsapplication.ui.adapter.NewsAdapter
+import com.experiment.newsapplication.ui.feature.newshighlight.Refresh
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectIndexed
 import kotlinx.coroutines.launch
@@ -32,20 +33,6 @@ class BookmarkedNewsFragment : Fragment(R.layout.fragment_bookmarked_news) {
             //animation.duration = 0
 
             viewLifecycleOwner.lifecycleScope.launch {
-                repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    viewModel.newsHighlightFlow.collect{
-                        if(it.isNotEmpty()) {
-                            for (news in it.listIterator()){
-                                Log.d("NewsAPI", "ui: ${news.title}")
-                            }
-                            newsAdapter.submitList(it)
-                        }
-
-                    }
-                }
-            }
-
-            viewLifecycleOwner.lifecycleScope.launch {
                 repeatOnLifecycle(Lifecycle.State.STARTED){
                     viewModel.newsResultFlow.collectIndexed { index, value ->
                         Log.d("newsfragment ", "onViewCreated:  index : $index, data : ${value.data?.size}")
@@ -55,7 +42,9 @@ class BookmarkedNewsFragment : Fragment(R.layout.fragment_bookmarked_news) {
 
                             }
                             is APIResult.Success -> {
-
+                                value.data?.let {
+                                    newsAdapter.submitList(it)
+                                }
                             }
                             is APIResult.Error -> {
 
@@ -71,7 +60,7 @@ class BookmarkedNewsFragment : Fragment(R.layout.fragment_bookmarked_news) {
 
     override fun onStart() {
         super.onStart()
-        viewModel.getNewsHighlight()
+        viewModel.getNewsHighlight(Refresh.AUTOMATIC)
     }
 
 }

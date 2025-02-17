@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.experiment.newsapplication.data.APIResult
 import com.experiment.newsapplication.data.NewsHighlight
 import com.experiment.newsapplication.repository.NewHighlightRepository
+import com.experiment.newsapplication.ui.feature.newshighlight.Refresh
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,12 +22,12 @@ class BookmarkedNewsViewModel @Inject constructor(private val repository: NewHig
 
     private val newsResult = MutableStateFlow<APIResult<List<NewsHighlight>>>(APIResult.Loading())
     val newsResultFlow = newsResult.asStateFlow()
-    fun getNewsHighlight() {
+    fun getNewsHighlight(refresh: Refresh) {
         viewModelScope.launch {
             newsHighlight.value = repository.getNewsResponse()
         }
         viewModelScope.launch {
-             repository.getNewsResult().collectLatest {
+             repository.getNewsHighlight(refresh).collectLatest {
                  newsResult.value = it
             }
         }

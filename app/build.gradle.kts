@@ -52,11 +52,19 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
-    implementation(libs.androidx.swiperefreshlayout)
-    implementation(libs.androidx.room.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    // swipe refresh
+    implementation(libs.androidx.swiperefreshlayout)
+
+    // room
+    implementation(libs.androidx.room.ktx)
+
+    implementation(libs.androidx.room.runtime)
+    //ksp("androidx.room:room-compiler:$room_version")
+    kapt(libs.androidx.room.compiler)
 
     // jetpack navigation
 

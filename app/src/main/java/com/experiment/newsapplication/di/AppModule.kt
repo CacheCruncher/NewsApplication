@@ -1,6 +1,9 @@
 package com.experiment.newsapplication.di
 
+import android.app.Application
+import androidx.room.Room
 import com.experiment.newsapplication.api.NewsAPI
+import com.experiment.newsapplication.data.NewsDatabase
 import com.experiment.newsapplication.network.NewsAPIInterceptor
 import dagger.Module
 import dagger.Provides
@@ -19,7 +22,7 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideRetrofit():Retrofit{
+    fun provideRetrofit(): Retrofit {
         val client = OkHttpClient()
         val interceptor = NewsAPIInterceptor()
         val loggingInterceptor = HttpLoggingInterceptor().apply {
@@ -39,10 +42,16 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideNewsAPI(retrofit: Retrofit):NewsAPI {
+    fun provideNewsAPI(retrofit: Retrofit): NewsAPI {
         return retrofit.create(NewsAPI::class.java)
     }
 
-
+    @Provides
+    @Singleton
+    fun provideNewsDatabase(application: Application): NewsDatabase {
+        return Room.databaseBuilder(application, NewsDatabase::class.java, "news database")
+            .fallbackToDestructiveMigration()
+            .build()
+    }
 
 }

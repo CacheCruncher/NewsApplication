@@ -62,47 +62,49 @@ class NewHighlightRepository @Inject constructor(
         }
     }
 
-    fun getNewsHighlight(refresh: Refresh) = networkBoundResource(
-        fetchFromDatabase = {
-            newsDatabase.getNewsDao().getNewsHighlights()
-        },
-        fetchFromNetwork = {
-            newsAPI.getNewsResponse().body()?.articles?.map { newsFromServer ->
-                val bookMarkedList =
-                    newsDatabase.getNewsDao().getAllBookMarkedNewsHighlights().firstOrNull()
-                val isBookMarked = bookMarkedList?.any { newsFromServer.url == it.newsUrl } ?: false
-                NewsHighlight(
-                    title = newsFromServer.title,
-                    newsUrl = newsFromServer.url,
-                    imageUrl = newsFromServer.urlToImage,
-                    isBookMark = isBookMarked
-                )
-            }
-        },
-        insertFetchResultInDataBase = { transformedNews ->
-            transformedNews?.let {
-                newsDatabase.withTransaction {
-                    newsDatabase.getNewsDao().insertNews(it)
-                }
-            }
-        },
-        shouldFetchFromNetwork = { cachedNews ->
-            if (refresh == Refresh.MANUAL) {
-                true
-            } else {
-                val sortedNews = cachedNews.sortedBy { news ->
-                    news.createAt
-                }
-                val oldestTime = sortedNews.firstOrNull()?.createAt
-                // refresh if news is older then 1 hr or no news at all.
-                val needRefresh =
-                    oldestTime == null || oldestTime < System.currentTimeMillis() - TimeUnit.HOURS.toMillis(
-                        1
+    fun getNewsHighlight(refresh: Refresh): Flow<APIResult<List<NewsHighlight>>> =
+        networkBoundResource(
+            fetchFromDatabase = {
+                newsDatabase.getNewsDao().getNewsHighlights()
+            },
+            fetchFromNetwork = {
+                newsAPI.getNewsResponse().body()?.articles?.map { newsFromServer ->
+                    val bookMarkedList =
+                        newsDatabase.getNewsDao().getAllBookMarkedNewsHighlights().firstOrNull()
+                    val isBookMarked =
+                        bookMarkedList?.any { newsFromServer.url == it.newsUrl } ?: false
+                    NewsHighlight(
+                        title = newsFromServer.title,
+                        newsUrl = newsFromServer.url,
+                        imageUrl = newsFromServer.urlToImage,
+                        isBookMark = isBookMarked
                     )
+                }
+            },
+            insertFetchResultInDataBase = { transformedNews ->
+                transformedNews?.let {
+                    newsDatabase.withTransaction {
+                        newsDatabase.getNewsDao().insertNews(it)
+                    }
+                }
+            },
+            shouldFetchFromNetwork = { cachedNews ->
+                if (refresh == Refresh.MANUAL) {
+                    true
+                } else {
+                    val sortedNews = cachedNews.sortedBy { news ->
+                        news.createAt
+                    }
+                    val oldestTime = sortedNews.firstOrNull()?.createAt
+                    // refresh if news is older then 1 hr or no news at all.
+                    val needRefresh =
+                        oldestTime == null || oldestTime < System.currentTimeMillis() - TimeUnit.HOURS.toMillis(
+                            1
+                        )
 
-                needRefresh
+                    needRefresh
+                }
             }
-        }
 
-    )
+        )
 }
