@@ -15,11 +15,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:src="@drawable/gradiant"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
     <TextView
         android:id="@+id/news_highlight_title_tv"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
+        android:text="title"
+        android:textColor="@color/white"
         app:layout_constraintEnd_toStartOf="@id/news_bookmark_button"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
