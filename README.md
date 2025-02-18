@@ -1,0 +1,4 @@
+News Application.
+
+- MVVM
+- Retrofit
