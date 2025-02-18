@@ -4,5 +4,4 @@ News Application.
 - Retrofit
 
 
-
-![news_app_news_highlight](https://github.com/user-attachments/assets/e4cd1759-5034-4d13-8f58-60dd79e5cbdc)
+![news_app_news_highlight (2)](https://github.com/user-attachments/assets/361aea60-1316-4bfd-8c79-453382dd1ab1)
