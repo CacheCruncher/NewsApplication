@@ -21,7 +21,7 @@ class NewsHighlightViewModel @Inject constructor(
     private val refreshChannel = Channel<Refresh>()
 
     val newsHighlight = refreshChannel.receiveAsFlow().flatMapLatest { refresh ->
-        repository.getNewsResult(refresh)
+        repository.getNewsHighlight(refresh)
     }.stateIn(
         viewModelScope, SharingStarted.Lazily, APIResult.Loading()
     )

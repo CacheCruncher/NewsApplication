@@ -10,7 +10,6 @@ import com.experiment.newsapplication.ui.feature.newshighlight.Refresh
 import com.experiment.newsapplication.util.networkBoundResource
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.firstOrNull
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -35,39 +34,13 @@ class NewHighlightRepository @Inject constructor(
         }
     }
 
-    fun getNewsResult(refresh: Refresh): Flow<APIResult<List<NewsHighlight>>> {
-        return channelFlow {
-            val response = newsAPI.getNewsResponse()
-
-            Log.d("repository", "getNewsResult: code: ${response.code()} ")
-            send(APIResult.Loading())
-
-            // added 2s delay to show progress icon
-            delay(2000)
-
-            if (response.isSuccessful) {
-                response.body()?.articles?.map {
-                    NewsHighlight(
-                        title = it.title,
-                        newsUrl = it.url,
-                        imageUrl = it.urlToImage,
-                        isBookMark = false
-                    )
-                }?.let {
-                    send(APIResult.Success(it))
-                } ?: send(APIResult.Error(error = Throwable(message = "Empty results")))
-            } else {
-                send(APIResult.Error(error = Throwable(message = response.errorBody().toString())))
-            }
-        }
-    }
-
     fun getNewsHighlight(refresh: Refresh): Flow<APIResult<List<NewsHighlight>>> =
         networkBoundResource(
             fetchFromDatabase = {
                 newsDatabase.getNewsDao().getNewsHighlights()
             },
             fetchFromNetwork = {
+                delay(1000) //for testing: to show the loading
                 newsAPI.getNewsResponse().body()?.articles?.map { newsFromServer ->
                     val bookMarkedList =
                         newsDatabase.getNewsDao().getAllBookMarkedNewsHighlights().firstOrNull()

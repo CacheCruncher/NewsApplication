@@ -16,7 +16,7 @@ inline fun <DatabaseResultType, NetworkResultType> networkBoundResource(
     if (shouldFetchFromNetwork(firstField)) {
         val loadingJob = launch {
             fetchFromDatabase().collect { databaseRow ->
-                send(APIResult.Success(databaseRow))
+                send(APIResult.Loading(databaseRow))
             }
         }
         try {
